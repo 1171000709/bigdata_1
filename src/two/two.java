@@ -18,28 +18,24 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import java.util.Random;
 
 public class two {
-  public static class TokenizerMapper extends Mapper<LongWritable, Text, IntWritable, Text> {
+  public static class TokenizerMapper extends Mapper<LongWritable, Text, Text, Text> {
     /**
 
     */  
     @Override
-    protected void map(LongWritable key, Text value, Mapper<LongWritable, Text, IntWritable, Text>.Context context)
+    protected void map(LongWritable key, Text value, Mapper<LongWritable, Text, Text, Text>.Context context)
             throws IOException, InterruptedException {
-      String delim = "\\\n";
-        StringTokenizer itr = new StringTokenizer(value.toString(),delim);
-        while (itr.hasMoreTokens()) {
-            String tep=itr.nextToken();
-              context.write(new IntWritable(1), new Text(tep));
-        }
+            String[] tem=value.toString().split("\\|");
+            context.write(new Text(tem[10]), value);
     }
 }
 
-public static class IntSumReducer extends Reducer<IntWritable, Text, NullWritable, Text> {
+public static class IntSumReducer extends Reducer<Text, Text, NullWritable, Text> {
     /**
 
      */
     @Override
-    protected void reduce(IntWritable key, Iterable<Text> values,
+    protected void reduce(Text key, Iterable<Text> values,
             Context context) throws IOException, InterruptedException {
         for (Text val : values) {
             String temp= val.toString();
@@ -63,6 +59,7 @@ public static class IntSumReducer extends Reducer<IntWritable, Text, NullWritabl
        }
 }
 
+
 public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
      /**
      * 
@@ -73,13 +70,13 @@ public static void main(String[] args) throws IOException, ClassNotFoundExceptio
     job.setMapperClass(TokenizerMapper.class); //
    // job.setCombinerClass(IntSumReducer.class);    //
     job.setReducerClass(IntSumReducer.class); //
-    job.setMapOutputKeyClass(IntWritable.class);
+    job.setMapOutputKeyClass(Text.class);
     job.setMapOutputValueClass(Text.class);
     job.setOutputKeyClass(NullWritable.class);        //
     job.setOutputValueClass(Text.class);    //
     
     FileInputFormat.addInputPath(job, new Path("hdfs://localhost:9000/D_Sample"));
-    FileOutputFormat.setOutputPath(job, new Path("hdfs://localhost:9000/test"));
+    FileOutputFormat.setOutputPath(job, new Path("hdfs://localhost:9000/D_Filter"));
 
     System.exit(job.waitForCompletion(true) ?0 : 1);       
 }

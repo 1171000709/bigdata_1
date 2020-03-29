@@ -25,18 +25,9 @@ public class one {
     @Override
     protected void map(LongWritable key, Text value, Mapper<LongWritable, Text, Text, Text>.Context context)
             throws IOException, InterruptedException {
-      String delim = "\\\n";
-        StringTokenizer itr = new StringTokenizer(value.toString(),delim);
-        while (itr.hasMoreTokens()) {
-            String tep=itr.nextToken();
-            String k="";
-            int cnt=0;
-            for (String temp:tep.split("\\|")) {
-              cnt++;
-              if (cnt==11)k=temp;
-            }
-            context.write(new Text(k), new Text(tep));
-        }
+            String tep=value.toString();
+            String[] k=tep.split("\\|");
+            context.write(new Text(k[10]), value);
     }
 }
 
@@ -88,7 +79,7 @@ public static void main(String[] args) throws IOException, ClassNotFoundExceptio
     job.setOutputValueClass(Text.class);    //
     
     FileInputFormat.addInputPath(job, new Path("hdfs://localhost:9000/in/data.txt"));
-    FileOutputFormat.setOutputPath(job, new Path("hdfs://localhost:9000/D2"));
+    FileOutputFormat.setOutputPath(job, new Path("hdfs://localhost:9000/D_Sample"));
 
     System.exit(job.waitForCompletion(true) ?0 : 1);       
 }

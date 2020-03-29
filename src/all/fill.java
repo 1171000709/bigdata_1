@@ -1,4 +1,4 @@
-package four;
+package all;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -22,7 +22,7 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import java.util.Random;
 
-public class four {
+public class fill {
   //private static int sum=1966;
   private static int nows=0;
   private static double minLongitude=Double.MAX_VALUE;
@@ -163,8 +163,8 @@ public static void main(String[] args) throws IOException, ClassNotFoundExceptio
      */
    
     Configuration conf = new Configuration();
-    Job job = Job.getInstance(conf, "four"); //
-    job.setJarByClass(four.class);
+    Job job = Job.getInstance(conf, "fill"); //
+    job.setJarByClass(fill.class);
     job.setMapperClass(TokenizerMapper.class); //
    // job.setCombinerClass(IntSumReducer.class);    //
     job.setReducerClass(IntSumReducer.class); //
@@ -173,8 +173,8 @@ public static void main(String[] args) throws IOException, ClassNotFoundExceptio
     job.setOutputKeyClass(NullWritable.class);        //
     job.setOutputValueClass(Text.class);    //
 
-    FileInputFormat.addInputPath(job, new Path("hdfs://localhost:9000/D_Filter2"));
-    FileOutputFormat.setOutputPath(job, new Path("hdfs://localhost:9000/D_Done"));
+    FileInputFormat.addInputPath(job, new Path("hdfs://localhost:9000/allD_Filter"));
+    FileOutputFormat.setOutputPath(job, new Path("hdfs://localhost:9000/allD_Done"));
 
     System.exit(job.waitForCompletion(true) ?0 : 1);     
 }
